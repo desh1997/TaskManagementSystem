@@ -1,0 +1,53 @@
+Approach and Assumptions
+Overview
+The approach for implementing a task management system using Django and Django REST framework involves creating a RESTful API that supports user registration, authentication, and task management functionalities. This includes CRUD operations for tasks, filtering and searching tasks, and user authentication using JWT tokens.
+
+**1. User Registration and Authentication
+Implementation:
+
+RegisterView:
+
+Uses Django's CreateAPIView to handle user registration.
+The RegisterSerializer validates and creates new user accounts.
+The permission_classes is set to AllowAny to allow unrestricted access for user registration.
+LoginView:
+
+Uses Django's GenericAPIView to handle user login.
+The LoginSerializer validates user credentials.
+The authenticate function from Django is used to verify user credentials.
+On successful authentication, JWT tokens are generated using RefreshToken from the rest_framework_simplejwt library and returned in the response.
+If authentication fails, an error message is returned with a 400 status code.
+Assumptions:
+
+Users can register and log in without restrictions.
+JWT is used for authentication, ensuring secure access to API endpoints.
+**2. Task Management
+Implementation:
+
+TaskViewSet:
+Inherits from ModelViewSet to provide CRUD operations for tasks.
+permission_classes is set to IsAuthenticated to ensure only authenticated users can access or modify tasks.
+Uses DjangoFilterBackend and SearchFilter to allow filtering by status, priority, and due_date, and searching by title and description.
+The get_queryset method filters tasks to only include those assigned to the authenticated user.
+The perform_create method assigns the task to the authenticated user upon creation.
+Custom create, update, and destroy methods handle task creation, updating, and deletion respectively.
+Assumptions:
+
+Tasks are associated with users, and each user can only manage their own tasks.
+The API supports filtering and searching for tasks based on defined criteria.
+**3. Pagination and Filtering
+Implementation:
+
+Pagination is supported by default in Django REST framework. Ensure that the pagination_class is configured in the settings.py if needed.
+The filter_backends and search_fields attributes in TaskViewSet allow tasks to be filtered and searched based on specified fields.
+Assumptions:
+
+Basic filtering and search functionalities are implemented, and additional pagination settings can be adjusted as needed.
+**4. Dockerization
+Dockerfile and docker-compose.yml are configured to containerize the Django application, ensuring that it runs consistently in different environments.
+SQLite is used as the database, simplifying the setup by eliminating the need for a separate database service.
+Assumptions:
+
+SQLite is chosen for simplicity, and is suitable for development or small-scale applications. For production, a more robust database like PostgreSQL may be preferred.
+Summary
+The provided approach ensures a secure and efficient implementation of a task management system with user authentication, task management functionalities, and basic filtering and searching. It leverages Django REST framework's capabilities and is Dockerized for ease of deployment.
